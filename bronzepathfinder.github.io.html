@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Rotating Images</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Align items to the top */
+            height: 100vh;
+            margin: 0;
+            background-color: rgb(40, 112, 103); /* Solid background color */
+        }
+        #image-container {
+            position: relative;
+            width: 750px; /* Increased size by 25% */
+            height: 750px; /* Increased size by 25% */
+            margin-top: 10px; /* Reduced margin to bring images closer to the top */
+        }
+        .image {
+            position: absolute;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        #image1 {
+            width: 750px; /* Increased size by 25% */
+            height: 750px; /* Increased size by 25% */
+        }
+        #image2 {
+            width: 630px; /* Increased size by 25% */
+            height: 630px; /* Increased size by 25% */
+            top: 60px; /* Adjusted position */
+            left: 60px; /* Adjusted position */
+        }
+        #image3 {
+            width: 510px; /* Increased size by 25% */
+            height: 510px; /* Increased size by 25% */
+            top: 120px; /* Adjusted position */
+            left: 120px; /* Adjusted position */
+        }
+        #image4 {
+            width: 390px; /* Increased size by 25% */
+            height: 390px; /* Increased size by 25% */
+            top: 180px; /* Adjusted position */
+            left: 180px; /* Adjusted position */
+        }
+        #image5 {
+            width: 270px; /* Increased size by 25% */
+            height: 270px; /* Increased size by 25% */
+            top: 240px; /* Adjusted position */
+            left: 240px; /* Adjusted position */
+        }
+        #image6 {
+            width: 150px; /* Increased size by 25% */
+            height: 150px; /* Increased size by 25% */
+            top: 300px; /* Adjusted position */
+            left: 300px; /* Adjusted position */
+        }
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 600px; /* Maximum width for the taskbar */
+            height: 100px; /* Fixed height */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border: 2px solid #000; /* Simple frame */
+            background-color: rgb(176, 121, 57); /* Solid background color */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            z-index: 10; /* Ensure it stays on top */
+        }
+        .rotation-counter {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .slider {
+            width: 80%; /* Fixed slider width */
+            margin: 0 10px;
+        }
+        button {
+            width: 50px; /* Fixed button width */
+        }
+    </style>
+</head>
+<body>
+    <div id="image-container">
+        <img id="image1" class="image" src="Compass image/ic1.png" alt="Image 1">
+        <img id="image2" class="image" src="Compass image/ic2.png" alt="Image 2">
+        <img id="image3" class="image" src="Compass image/ic3.png" alt="Image 3">
+        <img id="image4" class="image" src="Compass image/ic4.png" alt="Image 4">
+        <img id="image5" class="image" src="Compass image/ic5.png" alt="Image 5">
+        <img id="image6" class="image" src="Compass image/ic6.png" alt="Image 6">
+    </div>
+    <div class="taskbar" id="taskbar">
+        <div class="rotation-counter">
+            <p>Day: <span id="day-counter">1</span></p> <!-- Initial Day is set to 1 -->
+        </div>
+        <div class="slider-container">
+            <button onclick="rotateImages(-1)">-1</button>
+            <input type="range" min="1" max="360" value="1" class="slider" id="rotation-slider" oninput="updateRotation(this.value)">
+            <button onclick="rotateImages(1)">+1</button>
+        </div>
+    </div>
+    <script>
+        let angle1 = 1; // Offset by 1
+        // No angle for image2 since it remains stationary
+        let angle3 = 1;
+        let angle4 = -1;
+        let angle5 = 1;
+        // No angle for image6 since it remains stationary
+
+        function updateCounters() {
+            let day = ((angle1 % 360 + 360) % 360) + 1;
+            day = (day === 1) ? 360 : day - 1; // Adjust day to show 360 instead of 0
+            document.getElementById('day-counter').textContent = day; // Ensure counter displays 1 to 360 without 0
+        }
+
+        function rotateImages(direction) {
+            angle1 += direction; // Outer circle rotates counterclockwise
+            angle3 += direction;
+            angle4 -= direction;
+            angle5 += direction;
+
+            document.getElementById('image1').style.transform = `rotate(${-angle1}deg)`; // Rotate in the opposite direction for visual counterclockwise effect
+            document.getElementById('image3').style.transform = `rotate(${angle3}deg)`;
+            document.getElementById('image4').style.transform = `rotate(${angle4}deg)`;
+            document.getElementById('image5').style.transform = `rotate(${angle5}deg)`;
+
+            updateCounters();
+            let sliderValue = ((angle1 % 360 + 360) % 360) + 1;
+            sliderValue = (sliderValue === 1) ? 360 : sliderValue - 1; // Adjust slider to show 360 instead of 0
+            document.getElementById('rotation-slider').value = sliderValue;
+        }
+
+        function updateRotation(value) {
+            let adjustedValue = parseInt(value);
+            adjustedValue = (adjustedValue === 360) ? 0 : adjustedValue; // Adjust value to match 0 for 360
+            angle1 = adjustedValue; // Outer circle rotates counterclockwise
+            angle3 = adjustedValue;
+            angle4 = -adjustedValue;
+            angle5 = adjustedValue;
+
+            document.getElementById('image1').style.transform = `rotate(${-angle1}deg)`; // Rotate in the opposite direction for visual counterclockwise effect
+            document.getElementById('image3').style.transform = `rotate(${angle3}deg)`;
+            document.getElementById('image4').style.transform = `rotate(${angle4}deg)`;
+            document.getElementById('image5').style.transform = `rotate(${angle5}deg)`;
+
+            updateCounters();
+        }
+
+        // Add event listener for keyboard input
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') {
+                rotateImages(-1); // Rotate counterclockwise
+            } else if (event.key === 'ArrowRight') {
+                rotateImages(1); // Rotate clockwise
+            }
+        });
+
+        // Initialize slider to start from 1 and match rotation at start
+        document.getElementById('rotation-slider').value = 1; // Initialize to day 1
+        updateRotation(1); // Set the rotation to day 1 initially
+
+        // Function to adjust taskbar scale
+        function adjustTaskbarScale() {
+            const taskbar = document.getElementById('taskbar');
+            const scale = 1 / window.devicePixelRatio;
+            taskbar.style.transform = `scale(${scale})`;
+            taskbar.style.transformOrigin = 'bottom center';
+        }
+
+        // Initial adjustment
+        adjustTaskbarScale();
+
+        // Adjust scale when window is resized
+        window.addEventListener('resize', adjustTaskbarScale);
+    </script>
+</body>
+</html>
